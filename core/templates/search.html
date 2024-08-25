@@ -1,0 +1,49 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %} 
+
+{% block title %} Mayflix - Procurando... {% endblock %} 
+
+{% block content %}
+{% include 'Navbar.html' %}
+{% for topic in topics %}
+  <div class="movies-container">
+    <div class="topic">
+      <h2>{{ topic.genre }}</h2>
+    </div>
+  
+    <div class="Movies">
+    {% for media in topic.medias %}
+      <div class="image">
+          <a href="{% url 'MovieDetails' profile.tag media.uuid %}">
+              <img src="{{ media.image_url }}" alt="poster" width="100%">
+          </a>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+  <script>
+    const SEARCH_BTN = document.querySelector("#search-btn");
+    const SEARCH_FIELD = document.querySelector("#search-field");
+
+    function redirectToSearch() {
+        const query = SEARCH_FIELD.value.trim(); // Remover espaços extras
+        if (query !== "") {
+            window.location.href = `/list/{{ profile.tag }}/${encodeURIComponent(query)}`;
+        }
+    }
+    SEARCH_FIELD.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            redirectToSearch();
+        }
+    });
+    SEARCH_BTN.addEventListener("click", redirectToSearch);
+
+  </script>
+{% endblock %}
+

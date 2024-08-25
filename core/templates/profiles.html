@@ -1,0 +1,66 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profiles.css' %}">
+{% endblock %} 
+
+{% block title %} Mayflix - Perfils {% endblock %} 
+
+{% block content %}
+{% include 'Navbar.html' %}
+
+<div class="container">
+    <div class="middleinfo">
+        <h1>Quem está assistindo?</h1>
+        <div id="ls_profiles" class="profiles">
+            {% for profile in profiles %}
+                {% if profile.is_kid %}
+                <div class="pessoal">
+                    <a class="profilecontainer" href="{{ profile.tag }}/catalog">
+                        <div class="profile kids"><p>Kids</p></div>
+                        <div class="profile-name">Infantil</div>
+                    </a> 
+                </div>
+                {% else %}
+                <div class="pessoal">
+                    <a class="removeprofile"><i id="remove-profile" class='bx bx-trash'></i></a>
+                    <a class="profilecontainer" href="{{ profile.tag }}/catalog">
+                        {% if profile.profile != "" %}
+                            <div class="profile"><img src="{{ profile.profile }}" alt="profile photo"></div>
+                        {% endif %}
+                        <div class="profile-name">{{ profile.name }}</div>
+                    </a> 
+                </div>
+                {% endif %}
+            {% endfor %}
+            <!-- <div class="add-profile"><i class='bx bx-plus-circle'></i></div> Adicionar depois sistema de mais perfis--> 
+        </div>
+        <button id="m_profiles"><span>GERENCIAR PERFILS</span></button>
+    </div>
+    <div class="bottominfo">
+        <p>@.titiamay ❤️</p>
+    </div>
+</div>
+
+<script>
+
+    const MANAGE_PROFILES = document.querySelector("#m_profiles");
+    const PROFILE_LIST = document.querySelector("#ls_profiles");
+    const REMOVE_PROFILE = document.querySelector("#remove-profile");
+    
+    MANAGE_PROFILES.addEventListener("click", () => {
+        PROFILE_LIST.classList.toggle("edit");
+
+        if (PROFILE_LIST.classList.contains("edit")) {
+            MANAGE_PROFILES.innerHTML = '<span>CANCELAR</span>';
+        }else{
+            MANAGE_PROFILES.innerHTML = '<span>GERENCIAR PERFILS</span>';
+        }
+       
+    });
+
+</script>
+
+{% endblock %}

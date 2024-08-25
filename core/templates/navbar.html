@@ -1,0 +1,74 @@
+{% load static %}
+
+{% block header %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %} 
+
+{% block navbar %}
+<div class="container-fluid" style="display: flex; position: absolute; justify-content: space-between; z-index: 10; background-color: black;">
+    <nav class="navbar navbar-expand-lg" style="width: 100%;">
+        <div class="container-top" style="display: flex; justify-content: space-between; width: 100%;">
+            {% if user.is_authenticated %}
+                <div class="right-side" style="display: flex; height: 100%; gap: 20px; display: flex; justify-content: center; align-items: center;">
+                    {% if has_profile %}
+                    <a href="{% url 'Recommendations' profile.tag  %}" name="Home">
+                        <img src="{% static 'images/name_logo.png' %}" width="150">
+                    </a>
+                    <a class="icons middle" href="{% url 'ListMedias' profile.tag 'filmes' %}">Filmes</a>
+                    <a class="icons middle" href="{% url 'ListMedias' profile.tag 'series' %}">Series</a>
+                    <!-- <a class="icons middle" href="{% url 'ListMedias' profile.tag 'favoritos' %}">Minha Lista</a> -->
+                    {% else %}
+                    <a href="{% url 'Profile' %}" name="Home">
+                        <img src="{% static 'images/name_logo.png' %}" width="150">
+                    </a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <a href="{% url 'Home' %}" name="Home">
+                    <img src="{% static 'images/name_logo.png' %}" width="150">
+                </a>
+            {% endif %}
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    
+                </ul>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                        <div class="left-side" style="display: flex; height: 100%; gap: 20px;">
+                            {% if has_profile %}
+                            <div class="search active" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-right: 10px;">
+                                <input id="search-field" placeholder="Pesquisar" type="text" style="border: none;background: rgb(19, 19, 19); padding: 5px 10px; color: white;">
+                                <i id="search-btn" class='bx bx-search'></i>
+                            </div>
+                            
+                            {% if profile.is_kid%}
+                            <a href="{% url 'Profile' %}"><img class="middle" src="{% static 'images/kids.png' %}" alt="avatar" width="32px"></a>
+                            {% else %}
+                                {% if profile.profile != "" %}
+                                <a href="{% url 'Profile' %}"><img class="middle" src="{{ profile.profile }}" alt="avatar" width="32px"></a>
+                                {% else %}
+                                <a href="{% url 'Profile' %}"><img class="middle" src="{% static 'images/logo.png' %}" alt="avatar" width="32px"></a>
+                                {% endif %}
+                            {% endif %}
+                              
+                            {% endif %}
+                            <a class="link" href="{% url 'Logout' %}" name="Logout">
+                                <button class="btn btn-danger btn-md">Sair</button>
+                            </a>
+                            
+                        </div>
+                    {% else %}
+                        <a class="link" href="{% url 'Login' %}" name="Login">
+                            <button class="btn btn-danger btn-md">Logar</button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+{% endblock %}

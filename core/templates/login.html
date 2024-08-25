@@ -1,0 +1,42 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="background-img">
+    <div class="jumbotron">
+        <div class="login-form">
+            <center>
+              {% if messages %}
+                  {% for message in messages %} 
+                  <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+                      {{message}}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endfor %} 
+              {% endif %}
+          </center>
+          <form action="" method="POST"> {% csrf_token %}
+              <h1 class="flex justify-content-center text-center">
+                  <a href="{% url 'Home' %}" name="Home">
+                      <img src="{% static 'images/name_logo.png' %}" alt="Logo" title="Logo" width="150"/>
+                  </a>
+              </h1>
+              <div class="panel register flex justify-content-center">
+                  <div class="hint-text text-center" style="font-size: medium;">Novo em Mayflix? <a href="{% url 'Register' %}" name = 'Register'>Registre-se</a></div>
+              </div>
+              <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="floatingInput" name="username" placeholder="name@example.com">
+                  <label for="floatingInput" class="text-black">Nome de Usuário</label>
+              </div>
+              <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="floatingInput" name="password" placeholder="name@example.com">
+                  <label for="floatingInput" class="text-black">Senha</label>
+              </div>
+              <div class="d-grid gap-2">
+                  <button class="btn btn-danger" type="submit">Logar</button>
+              </div>
+          </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

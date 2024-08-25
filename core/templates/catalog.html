@@ -1,0 +1,81 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block header %}  
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  {% include 'Navbar.html' %}
+</div>
+<center>
+  <div class="trailer-item">
+    <div class="movieinfo" style="position: absolute;
+    width: 100%;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 15%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,1) 100%);
+    z-index: 1;
+    display: flex;">
+    <div class="block-info" style=" height: 100%; width: 550px; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+      <div class="info-direct" style="height: 100%; width: 550px; display: flex; flex-direction: column; justify-content: end; align-items: center;">
+        <h1 style="color: white; text-align: center;">{{ media.title }}</h1>
+      <span style="color: white; text-align: center; padding: 0 30px;">{{ media.sinopse }}</span>
+      </div>
+      <div class="info-buttons" style="width: 100%; height: 80px; padding: 30px 0; display: flex; align-items: center; justify-content: center; padding: 0 30px;">
+        <a href="{% url 'Watch' profile.tag media.uuid %}"><i style="color: white; font-size: 60px;" class='bx bx-play-circle'></i></a>
+      </div>
+    </div>
+  </div>
+    <iframe width="100%" height="500px" src="{{ media.trailer_url }}?autoplay=1&controls=0&mute=1&loop=1&modestbranding=1&rel=0"
+      frameborder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+{% for topic in topics %}
+  <div class="cards-container">
+      <div class="topic">
+          <h2 style="display: flex;">{{ topic.genre }}</h2>
+      </div>
+      
+      <div class="Movies">
+      {% for media in topic.medias %}
+          <div class="image">
+              <a href="{% url 'MovieDetails' profile.tag media.uuid %}">
+                  <img src="{{ media.image_url }}" alt="poster" width="100%">
+              </a>
+          </div>
+      {% endfor %}
+      </div>
+  </div>
+  {% empty %}
+  <div class="cards-container">
+    <div class="topic">
+        <h2>Nenhum tópico encontrado.</h2>
+    </div>
+  </div>
+  {% endfor %}
+
+  <script>
+    const SEARCH_BTN = document.querySelector("#search-btn");
+    const SEARCH_FIELD = document.querySelector("#search-field");
+
+    function redirectToSearch() {
+        const query = SEARCH_FIELD.value.trim();
+        if (query !== "") {
+            window.location.href = `/list/{{ profile.tag }}/${encodeURIComponent(query)}`;
+        }
+    }
+    SEARCH_FIELD.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            redirectToSearch();
+        }
+    });
+    SEARCH_BTN.addEventListener("click", redirectToSearch);
+
+  </script>
+
+</center>
+</div>
+{% endblock %}

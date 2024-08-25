@@ -1,0 +1,25 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="background-img">
+  <div class="jumbotron">
+    <div class="container-fluid">
+      {% include 'Navbar.html' %}
+    </div>
+    <center>
+      <div class="container">
+        <div class="hero-text">
+          <b><h1 class="landing-title">.titiamayflix❤️ <br> Filmes, TV shows, e muito mais.</h1></b>
+          <p class="hero-p">Assista a qualquer momento. Cancele a qualquer momento.</p>
+          <p>Pronto pra assitir? Crie uma conta e utilize filmes piratas sem problema nenhum.</p>
+          <a href="{% url 'Register' %}" name="Register">
+            <button class="btn btn-danger btn-lg">Começar</button>
+          </a>
+        </div>
+      </div>
+    </center>
+    </div>
+  </div>
+</div>
+{% endblock %}

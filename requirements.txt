@@ -1,0 +1,6 @@
+django
+python-dotenv
+pillow
+cinemagoer
+schedule
+beautifulsoup4

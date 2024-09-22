@@ -16,6 +16,7 @@
                     </a>
                     <a class="icons middle" href="{% url 'ListMedias' profile.tag 'filmes' %}">Filmes</a>
                     <a class="icons middle" href="{% url 'ListMedias' profile.tag 'series' %}">Series</a>
+                    <a class="icons middle" href="{% url 'ListMedias' profile.tag 'mature' %}">+18</a>
                     <!-- <a class="icons middle" href="{% url 'ListMedias' profile.tag 'favoritos' %}">Minha Lista</a> -->
                     {% else %}
                     <a href="{% url 'Profile' %}" name="Home">
@@ -49,9 +50,9 @@
                             <a href="{% url 'Profile' %}"><img class="middle" src="{% static 'images/kids.png' %}" alt="avatar" width="32px"></a>
                             {% else %}
                                 {% if profile.profile != "" %}
-                                <a href="{% url 'Profile' %}"><img class="middle" src="{{ profile.profile }}" alt="avatar" width="32px"></a>
+                                <a href="{% url 'Profile' %}"><img class="middle" src="{{ profile.profile }}" alt="avatar" style="height: 35px; width: 35px; object-fit: cover;"></a>
                                 {% else %}
-                                <a href="{% url 'Profile' %}"><img class="middle" src="{% static 'images/logo.png' %}" alt="avatar" width="32px"></a>
+                                <a href="{% url 'Profile' %}"><img class="middle" src="{% static 'images/logo.png' %}" alt="avatar" style="height: 35px; width: 35px; object-fit: cover;"></a>
                                 {% endif %}
                             {% endif %}
                               

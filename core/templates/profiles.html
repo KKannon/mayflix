@@ -11,6 +11,19 @@
 {% block content %}
 {% include 'Navbar.html' %}
 
+
+<div id="profile-modal" class="profile-modal hide">
+    <form method="POST" class="post-form" style="display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: rgb(21, 21, 21); padding: 35px; border-radius: 30px;  gap: 30px;">  
+        <h3>Criar Novo Perfil</h3>
+        {% csrf_token %}  
+        {{ form }}  
+        <div class="btns">
+            <button type="submit" class="save btn btn-default" style="color: white; padding: 5px 10px; background-color: #dd0000; border-radius: 30px;">Create</button>
+            <button id="cancel-pf-creation" style="color: white; padding: 5px 10px; background-color: #666666; border-radius: 30px;">Cancel</button>  
+        </div>
+    </form>  
+</div>
+
 <div class="container">
     <div class="middleinfo">
         <h1>Quem está assistindo?</h1>
@@ -25,7 +38,7 @@
                 </div>
                 {% else %}
                 <div class="pessoal">
-                    <a class="removeprofile"><i id="remove-profile" class='bx bx-trash'></i></a>
+                    <a class="removeprofile" href="{% url 'DelProfile' profile.id %}"><i id="remove-profile" class='bx bx-trash'></i></a>
                     <a class="profilecontainer" href="{{ profile.tag }}/catalog">
                         {% if profile.profile != "" %}
                             <div class="profile"><img src="{{ profile.profile }}" alt="profile photo"></div>
@@ -35,7 +48,11 @@
                 </div>
                 {% endif %}
             {% endfor %}
-            <!-- <div class="add-profile"><i class='bx bx-plus-circle'></i></div> Adicionar depois sistema de mais perfis--> 
+
+            {% if can_add_pfs %}
+                <div id="add-profile" class="add-profile"><i class='bx bx-plus-circle'></i></div>
+            {% endif %}
+            
         </div>
         <button id="m_profiles"><span>GERENCIAR PERFILS</span></button>
     </div>
@@ -44,12 +61,24 @@
     </div>
 </div>
 
+<style>
+    .hide {
+        display: none;
+    }
+</style>
+
 <script>
 
     const MANAGE_PROFILES = document.querySelector("#m_profiles");
     const PROFILE_LIST = document.querySelector("#ls_profiles");
     const REMOVE_PROFILE = document.querySelector("#remove-profile");
+    const PROFILE_MODAL = document.querySelector("#profile-modal");
+    const ADD_PROFILE_BTN = document.querySelector("#add-profile");
+    const CANCEL_PFCREATION_BTN = document.querySelector("#cancel-pf-creation");
     
+    ADD_PROFILE_BTN.addEventListener("click", () => {PROFILE_MODAL.classList.remove("hide")});
+    CANCEL_PFCREATION_BTN.addEventListener("click", () => {PROFILE_MODAL.classList.add("hide")});
+
     MANAGE_PROFILES.addEventListener("click", () => {
         PROFILE_LIST.classList.toggle("edit");
 
@@ -60,6 +89,8 @@
         }
        
     });
+
+    
 
 </script>
 

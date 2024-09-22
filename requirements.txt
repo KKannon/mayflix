@@ -4,3 +4,5 @@ pillow
 cinemagoer
 schedule
 beautifulsoup4
+requests
+youtube-search-python

@@ -19,6 +19,7 @@ from django.urls import reverse
 # <====================================================================>
 from core.models import Movie, Profile
 from core.utils import Utils
+from core.forms import ProfileForm
 
 # <====================================================================>
 # Api do imdb (opcional)
@@ -30,13 +31,13 @@ from imdb import Cinemagoer
 # <====================================================================>
 import requests
 
-def Home(request):
+def Home(request:HttpRequest):
     """
         Carrega a página principal, sem nenhuma informação na parte superior da página.
     """
     return render(request, 'index.html', {"has_profile":False})
 
-def Register(request):
+def Register(request:HttpRequest):
     """
         Página de registro dos usuários.
     """
@@ -76,8 +77,8 @@ def Register(request):
         # Criando os perfis primários! (Normal e Infantil)
         # <====================================================================>
         tag = str(username.replace(" ", "_")).lower()
-        Profile.objects.create(user=user, tag=tag, name=username, profile="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg", is_kid=False)
         Profile.objects.create(user=user, tag="kids", name="Infantil", profile="", is_kid=True)
+        Profile.objects.create(user=user, tag=tag, name=username, profile="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg", is_kid=False)
 
         # <====================================================================>
         # Confirmar registro e redirecionar para login!
@@ -87,7 +88,7 @@ def Register(request):
 
     return render(request, 'register.html',{"has_profile":False})
 
-def Login(request):
+def Login(request:HttpRequest):
     """
         Página de login dos usuários.
     """
@@ -122,7 +123,7 @@ def Login(request):
     return render(request, 'login.html',{"has_profile":False})
 
 @login_required(login_url='Login')
-def Logout(request):
+def Logout(request:HttpRequest):
     """
         Página de logout dos usuários.
     """
@@ -131,7 +132,7 @@ def Logout(request):
     return redirect(reverse('Login'))
 
 @login_required(login_url='Login')
-def Catalog(request, profile_tag):
+def Catalog(request:HttpRequest, profile_tag):
     """
         Página de catalogos dos usuários.
     """
@@ -148,15 +149,17 @@ def Catalog(request, profile_tag):
 
     pf, genres = result
 
-    medias = Movie.objects.filter(genres__in=genres).order_by('?')[:160]
+    medias = Movie.objects.filter(genres__in=genres).order_by('?')[:300]
     media = medias.first()
+    media.trailer_url = Utils.get_url_trailer(media)
+    media.save()
 
     topics = Utils.organize(medias=medias)
     
     return render(request, 'catalog.html', {"media":media, "topics":topics, "profile":pf, "has_profile":True})
 
 @login_required(login_url='Login')
-def MovieDetails(request, profile_tag, movie_id):
+def MovieDetails(request:HttpRequest, profile_tag, movie_id):
     if not request.user.is_authenticated:
         return redirect('Login')
 
@@ -168,18 +171,14 @@ def MovieDetails(request, profile_tag, movie_id):
 
     pf, genres = result
     media = Movie.objects.get(uuid=movie_id)
-
+    media.trailer_url = Utils.get_url_trailer(media)
+    media.save()
 
     # <====================================================================>
     # Verifica se o filme tem um id do IMDB para acessar o filme nas embed (opcional)
     # Se tiver alguma api que não use o imdb, pode usar apenas o tmdb.
     # <====================================================================>
-    if not media.imdb_id or media.imdb_id == "":
-        ia = Cinemagoer()
-        imdb_movie = ia.search_movie(media.name)[0]
-        imdb_id = imdb_movie.movieID
-        Movie.objects.filter(uuid=movie_id).update(imdb_id=imdb_id)
-        media.imdb_id = imdb_id
+    media = Utils.get_imdb_id(media)
 
     # <====================================================================>
     # Buscar outros filmes relacionados ao gênero do filme atual,
@@ -233,6 +232,10 @@ def ListMedias(request:HttpRequest, profile_tag, query):
                 [{"uuid": str(movie.uuid), "title": movie.title, "release_date": movie.release_date, "image_url": movie.image_url} for movie in medias ]}
             ]
 
+        case "mature":
+            medias = Movie.objects.filter(genres__in=genres, adult=True)
+            organize_genre = True
+
         case _:
             movie_info = str(query).replace(" ", "+").replace("%20", "+")
 
@@ -282,15 +285,41 @@ def ListMedias(request:HttpRequest, profile_tag, query):
 def Profiles(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect('Login')
-
+    
     user = request.user
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = user
+            profile.tag = profile.name.replace(" ", "_")
+            profile.save()
+            return redirect('Profile') 
+    else:
+        form = ProfileForm()
 
     # <====================================================================>
     # Carregar todos os perfis associados ao usuário logado.
     # <====================================================================>
     profiles = Profile.objects.filter(user=user)
+    
+    can_add_pfs = False if profiles.count() > 3 else True
 
-    return render(request, 'profiles.html', {"profiles":profiles, "has_profile":False}) 
+    return render(request, 'profiles.html', {"profiles":profiles, "form":form, "has_profile":False, "can_add_pfs":can_add_pfs}) 
+
+@login_required(login_url='Login')
+def DelProfile(request:HttpRequest, profile_id):
+    if not request.user.is_authenticated:
+        return redirect('Login')
+    
+    user = request.user
+
+    profile = Profile.objects.get(user=user, pk=profile_id)
+
+    profile.delete()
+            
+    return redirect('Profile')
 
 @login_required(login_url='Login')
 def Watch(request, profile_tag, movie_id):
@@ -309,4 +338,14 @@ def Watch(request, profile_tag, movie_id):
     # Carrega os detalhes do filme que será assistido.
     # <====================================================================>
     media = Movie.objects.get(uuid=movie_id)
-    return render(request, 'watch.html', {"media":media, "profile":pf, "has_profile":True})
+
+    # <====================================================================>
+    # Verifica se o filme tem um id do IMDB para acessar o filme nas embed (opcional)
+    # Se tiver alguma api que não use o imdb, pode usar apenas o tmdb.
+    # <====================================================================>
+    media = Utils.get_imdb_id(media)
+    embed = Utils.get_embed(media.imdb_id, media.series)
+
+    print(embed)
+
+    return render(request, 'watch.html', {"media":media, "embed":embed, "profile":pf, "has_profile":True})

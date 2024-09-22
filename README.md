@@ -18,7 +18,7 @@ Bem-vindo ao MayFlix – uma aplicação de código aberto para gerenciamento de
 
 - Clone este repositório:
 ```sh
-git clone https://github.com/seu-usuario/mayflix.git
+git clone https://github.com/imsomn1a/mayflix.git
 cd mayflix
 ```
 - Crie e ative um ambiente virtual:
@@ -31,6 +31,19 @@ source venv/bin/activate # No Windows: env\Scripts\activate
 ```sh
 pip install -r requirements.txt
 ```
+- Cole sua chave API do [TMDB](https://www.themoviedb.org/login) no arquivo **.example.env**, depois renomeie para apenas **.env**:
+
+```py
+API_KEY="TMDB_API_KEY"
+```
+- Execute o comando para adicionar filmes e séries iniciais:
+
+```sh
+py manage.py search_data
+
+[params: -p | --pages <count:int>]
+```
+
 - Realize as migrações do banco de dados:
 
 ```py

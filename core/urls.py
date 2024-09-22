@@ -8,6 +8,7 @@ urlpatterns = [
     path('login', views.Login, name='Login'),
     path('logout', views.Logout, name='Logout'),
     path('profile', views.Profiles, name='Profile'),
+    path('delete-profile/<int:profile_id>', views.DelProfile, name='DelProfile'),
     path('catalog', views.Catalog, name='Recommendations'),
     path('list/<str:profile_tag>/<str:query>', views.ListMedias, name='ListMedias'),
     path('<str:profile_tag>/catalog', views.Catalog, name='Recommendations'),

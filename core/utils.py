@@ -6,10 +6,18 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from imdb import Cinemagoer
 from datetime import datetime
+from youtubesearchpython import VideosSearch
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 import requests
 
 class Utils:
+
+    @staticmethod
+    def get_url_trailer(media:Movie):
+        """Obtém o trailer do conteúdo pelo youtube."""
+        videosSearch = VideosSearch(media.name + ' Trailer Oficial', limit = 1).result()
+        url = "https://www.youtube.com/embed/" + videosSearch['result'][0]['id']
+        return url
 
     @staticmethod
     def get_profile_and_genres(profile_tag, user):
@@ -86,7 +94,51 @@ class Utils:
                 last_topics.append(topic)
 
         return last_topics
+    
+    @staticmethod
+    def get_imdb_id(media:Movie) -> Movie:
+        """
+            Links para pegar embed dos filmes de outros sites.
+        """
+        if not media.imdb_id or media.imdb_id == "":
+            ia = Cinemagoer()
+            imdb_movie = ia.search_movie(media.name)[0]
+            imdb_id = imdb_movie.movieID
+            Movie.objects.filter(uuid=media.uuid).update(imdb_id=imdb_id)
+            media.imdb_id = imdb_id
 
+        return media
+
+    @staticmethod
+    def get_embed(imdb:str, serie:bool=False):
+        """
+            Links para pegar embed dos filmes de outros sites.
+        """
+
+        base_vidsrc = "https://vidsrc.me/embed"
+        base_warezcdn = "https://embed.warezcdn.com"
+
+        if serie:
+            path_warezcdn = f"/serie/tt{imdb}"
+            path_vidsrc = f"/tv?imdb={imdb}"
+        else:
+            path_warezcdn = f"/filme/tt{imdb}"
+            path_vidsrc = f"/movie?imdb={imdb}"
+
+        warezcdn_url = base_warezcdn + path_warezcdn
+        vidsrc_url = base_vidsrc + path_vidsrc
+
+        try:
+            response = requests.get(warezcdn_url)
+            response.raise_for_status()
+        except requests.RequestException:
+            return None
+
+        # Verificar o conteúdo da resposta
+        if "Tem algum problema com o seu link." in response.text or "Estranho?!" in response.text:
+            return vidsrc_url
+        
+        return warezcdn_url
 
     @staticmethod
     def add_movies_query_selected(results, debug=False):

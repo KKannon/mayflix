@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -14,11 +13,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY =os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =os.getenv('DEBUG')
+DEBUG=True if str(os.getenv('DEBUG')) == "True" else False
 
 ALLOWED_HOSTS = ['*'] if DEBUG else ['127.0.0.1', 'localhost', '185.185.82.132', os.getenv("ALLOWED_HOSTS")]
 
-# Application definition
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv("CSRF_TRUSTED_ORIGIN")
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

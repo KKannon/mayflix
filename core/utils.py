@@ -15,9 +15,10 @@ class Utils:
     @staticmethod
     def get_url_trailer(media:Movie):
         """Obtém o trailer do conteúdo pelo youtube."""
-        videosSearch = VideosSearch(media.name + ' Trailer Oficial', limit = 1).result()
-        url = "https://www.youtube.com/embed/" + videosSearch['result'][0]['id']
-        return url
+        # videosSearch = VideosSearch(media.name + ' Trailer Oficial', limit = 1).result()
+        # url = "https://www.youtube.com/embed/" + videosSearch['result'][0]['id']
+        # return url
+        return "https://www.youtube.com/embed/_tZM-qelnYI"
 
     @staticmethod
     def get_profile_and_genres(profile_tag, user):

@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 
 # <====================================================================>
@@ -346,6 +346,6 @@ def Watch(request, profile_tag, movie_id):
     media = Utils.get_imdb_id(media)
     embed = Utils.get_embed(media.imdb_id, media.series)
 
-    print(embed)
+    return HttpResponseRedirect(embed)
 
-    return render(request, 'watch.html', {"media":media, "embed":embed, "profile":pf, "has_profile":True})
+    # return render(request, 'watch.html', {"media":media, "embed":embed, "profile":pf, "has_profile":True})

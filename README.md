@@ -18,7 +18,7 @@ Bem-vindo ao MayFlix – uma aplicação de código aberto para gerenciamento de
 
 - Clone este repositório:
 ```sh
-git clone https://github.com/imsomn1a/mayflix.git
+git clone https://github.com/KKannon/mayflix.git
 cd mayflix
 ```
 - Crie e ative um ambiente virtual:

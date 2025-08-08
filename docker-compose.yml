@@ -8,10 +8,11 @@ services:
     ports:
       - "5082:5082"
     environment:
-      - API_KEY="c1fdc69d31a262f799ca36915ef6f0bf"
-      - ALLOWED_HOSTS="mayflix.sayitright.space"
-      - DEBUG=False
-      - SECRET_KEY="django-secret-key"
-      - TMDB_BASE_URL="https://api.themoviedb.org/3"
-      - LANGUAGE="pt-BR"
+      API_KEY: c1fdc69d31a262f799ca36915ef6f0bf
+      ALLOWED_HOSTS: mayflix.sayitright.space
+      DEBUG: "False"
+      SECRET_KEY: django-secret-key
+      TMDB_BASE_URL: https://api.themoviedb.org/3
+      LANGUAGE: pt-BR
+
 

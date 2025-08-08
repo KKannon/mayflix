@@ -14,5 +14,4 @@ services:
       SECRET_KEY: django-secret-key
       TMDB_BASE_URL: https://api.themoviedb.org/3
       LANGUAGE: pt-BR
-    entrypoint: ["sh", "-c", "python manage.py migrate --no-input && python manage.py search_data"]
-    command: python manage.py runserver 0.0.0.0:5082
+    entrypoint: ["sh", "-c", "python manage.py migrate --no-input && python manage.py search_data && python manage.py runserver 0.0.0.0:5082"]

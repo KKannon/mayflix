@@ -1,5 +1,6 @@
 import time
 import requests
+from core.models import Movie
 from django.core.management.base import BaseCommand
 from core.utils import Utils
 from django.conf import settings
@@ -28,6 +29,11 @@ class Command(BaseCommand):
         LANGUAGE_CODE = settings.LANGUAGE_CODE
         num_pages = kwargs['pages']
         is_adult = kwargs['adult']
+
+
+        if Movie.objects.count() > 0:
+            self.stdout.write(self.style.SUCCESS('Base de filmes já foi pré-instalada!'))
+            return
 
         all_movies_and_shows = []
 

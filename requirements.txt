@@ -6,3 +6,5 @@ schedule
 beautifulsoup4
 requests
 youtube-search-python
+gunicorn
+whitenoise

@@ -14,5 +14,8 @@ services:
       SECRET_KEY: django-secret-key
       TMDB_BASE_URL: https://api.themoviedb.org/3
       LANGUAGE: pt-BR
-
-
+    command: >
+      sh -c "
+        python manage.py migrate --no-input &&
+        python manage.py search_data
+      "

@@ -1,9 +1,9 @@
-{% extends "Base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %} Mayflix - {{ media.title }} {% endblock %} 
 
 {% block content %}
-    {% include 'Navbar.html' %}
+    {% include 'navbar.html' %}
     <iframe style="width: 100%; height: 100%; margin-top: 45px;" src="{{ embed }}" scrolling="no" frameborder="0" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen=""></iframe>
 {% endblock %}

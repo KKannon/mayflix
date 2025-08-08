@@ -1,4 +1,4 @@
-{% extends "Base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block header %}
@@ -8,7 +8,7 @@
 {% block title %} Mayflix - Procurando... {% endblock %} 
 
 {% block content %}
-{% include 'Navbar.html' %}
+{% include 'navbar.html' %}
 {% for topic in topics %}
   <div class="movies-container">
     <div class="topic">

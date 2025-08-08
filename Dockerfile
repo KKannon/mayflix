@@ -13,8 +13,8 @@ COPY . .
 
 EXPOSE 5082
 
-RUN python manage.py search_data
-
 RUN python manage.py migrate --no-input
+
+RUN python manage.py search_data -p 1
 
 CMD ['python', 'manage.py', 'runserver', '0.0.0.0:5082']

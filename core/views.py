@@ -35,6 +35,9 @@ def Home(request:HttpRequest):
     """
         Carrega a página principal, sem nenhuma informação na parte superior da página.
     """
+    if not request.user.is_anonymous:
+        return redirect('Profile')
+
     return render(request, 'index.html', {"has_profile":False})
 
 def Register(request:HttpRequest):
